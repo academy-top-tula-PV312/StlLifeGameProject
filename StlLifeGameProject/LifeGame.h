@@ -1,21 +1,23 @@
 #pragma once
-#include <vector>
-#include "Cell.h"
 #include <algorithm>
+#include "Cell.h"
+
 
 class LifeGame
 {
 	std::vector<Cell> colony;
 
+protected:
 	bool isColony(Cell cell)
 	{
 		auto find = std::find_if(colony.begin(), colony.end(),
-			[&cell](Cell* item)
+			[&cell](Cell item)
 			{
-				return item->Point() == cell.Point();
+				return item.Point() == cell.Point();
 			});
 		return find != colony.end();
 	}
+
 public:
 	std::vector<Cell>& Colony() { return colony; }
 
@@ -55,10 +57,10 @@ public:
 					newCell.State() = CellState::Born;
 					colony.push_back(newCell);
 				}
-
-				if (cell->Neighbors() < 2 || cell->Neighbors() > 3)
-					cell->State() = CellState::Dead;
 			}
+			
+			if (cell->Neighbors() < 2 || cell->Neighbors() > 3)
+				cell->State() = CellState::Dead;
 		}
 
 		for (int i{}; i < colony.size();)
@@ -72,6 +74,16 @@ public:
 			}
 			if (colony.size() == 0) break;
 		}
+	}
+	
+	std::vector<Cell>::iterator ItColony(Cell cell)
+	{
+		auto find = std::find_if(colony.begin(), colony.end(),
+			[&cell](Cell item)
+			{
+				return item.Point() == cell.Point();
+			});
+		return find;
 	}
 };
 

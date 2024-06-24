@@ -48,3 +48,28 @@ public:
 };
 
 std::vector<Point> Offsets({ {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1} });
+
+int Cell::Row()
+{
+	return point.Row;
+}
+
+int Cell::Column()
+{
+	return point.Column;
+}
+
+Point Cell::Point()
+{
+	return point;
+}
+
+CellState& Cell::State()
+{
+	return state;
+}
+
+int& Cell::Neighbors()
+{
+	return neighbors;
+}

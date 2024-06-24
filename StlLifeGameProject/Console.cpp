@@ -62,6 +62,24 @@ void Console::Background(Color color)
 	SetConsoleTextAttribute(descriptor, colorBack | colorFore);
 }
 
+void Console::WritePosition(int row, int column, char symbol)
+{
+	SetCursor(row, column);
+	Write(symbol);
+}
+
+void Console::WritePosition(int row, int column, const char* cstr)
+{
+	SetCursor(row, column);
+	Write(cstr);
+}
+
+void Console::WritePosition(int row, int column, std::string str)
+{
+	SetCursor(row, column);
+	Write(str);
+}
+
 void Console::Clear()
 {
 	std::system("cls");

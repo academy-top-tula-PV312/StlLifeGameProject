@@ -1,7 +1,11 @@
 ﻿#include <iostream>
-#include "Console.h"
+#include "LifeGameViewConsole.h"
+
 
 int main()
 {
-    
+	LifeGameViewConsole game;
+
+	if (game.Setup())
+		game.Play();
 }

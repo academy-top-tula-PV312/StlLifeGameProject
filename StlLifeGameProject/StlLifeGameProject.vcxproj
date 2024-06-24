@@ -127,9 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Console.cpp" />
-    <ClCompile Include="LifeGame.cpp" />
     <ClCompile Include="StlLifeGameProject.cpp" />
   </ItemGroup>
   <ItemGroup>

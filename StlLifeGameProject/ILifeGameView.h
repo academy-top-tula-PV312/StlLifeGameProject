@@ -9,11 +9,11 @@ protected:
 
 public:
 	ILifeGameView()
-		: lifeGame{ new LifeGame() } {}
+		: lifeGame{ new LifeGame() }, speed{ 1000 } {}
 
 	int& Speed() { return speed; }
 
 	virtual bool Setup() = 0;
-	virtual void Paly() = 0;
+	virtual void Play() = 0;
 };
 
