@@ -34,14 +34,14 @@ class Cell
 	int neighbors;
 public:
 	Cell(Point point,
-		CellState state = CellState::Alive)
+		CellState state = CellState::Born)
 		: point{ point },
 		  state{ state },
 		  neighbors{} {}
 
-	int Row();
-	int Column();
-	Point Point();
+	int& Row();
+	int& Column();
+	Point& Point();
 
 	CellState& State();
 	int& Neighbors();
@@ -49,17 +49,17 @@ public:
 
 std::vector<Point> Offsets({ {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1} });
 
-int Cell::Row()
+int& Cell::Row()
 {
 	return point.Row;
 }
 
-int Cell::Column()
+int& Cell::Column()
 {
 	return point.Column;
 }
 
-Point Cell::Point()
+Point& Cell::Point()
 {
 	return point;
 }

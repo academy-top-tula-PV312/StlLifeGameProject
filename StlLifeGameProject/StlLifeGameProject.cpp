@@ -1,7 +1,6 @@
 ﻿#include <iostream>
 #include "LifeGameViewConsole.h"
 
-
 int main()
 {
 	LifeGameViewConsole game;

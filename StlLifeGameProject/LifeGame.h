@@ -2,88 +2,96 @@
 #include <algorithm>
 #include "Cell.h"
 
+enum LifeState
+{
+	Ok,
+	Empty,
+	Still
+};
 
 class LifeGame
 {
-	std::vector<Cell> colony;
-
-protected:
-	bool isColony(Cell cell)
-	{
-		auto find = std::find_if(colony.begin(), colony.end(),
-			[&cell](Cell item)
-			{
-				return item.Point() == cell.Point();
-			});
-		return find != colony.end();
-	}
+	std::vector<Cell*> colony;
 
 public:
-	std::vector<Cell>& Colony() { return colony; }
+	std::vector<Cell*>& Colony() { return colony; }
 
-	void NextColony()
+	LifeState NextColony()
 	{
-		auto colony_begin = colony.begin(); //std::begin(colony);
-		auto colony_end = colony.end();
-
 		int currentSize = colony.size();
+
+		int deads{};
 
 		for (int i{}; i < currentSize; i++)
 		{
-			Cell* cell = &colony[i];
+			colony[i]->Neighbors() = 0;
+			for (auto offset : Offsets)
+				if (IsColony(colony[i]->Point() + offset))
+					colony[i]->Neighbors()++;
+			if (colony[i]->Neighbors() < 2 || colony[i]->Neighbors() > 3)
+			{
+				colony[i]->State() = CellState::Dead;
+				deads++;
+			}
+		}
 
-			cell->Neighbors() = 0;
+		int borns{};
 
+		for (int i{}; i < currentSize; i++)
+		{
 			for (auto offset : Offsets)
 			{
-				Cell newCell = Cell(cell->Point() + offset);
-
-				if (isColony(newCell))
+				Cell* cellNew = new Cell(colony[i]->Point() + offset);
+				if (!IsColony(cellNew->Point()))
 				{
-					if(newCell.State() != CellState::Born)
-						cell->Neighbors()++;
-					continue;
-				}
-	
-				for (auto newOffset : Offsets)
-				{
-					Cell cellTemp(newCell.Point() + newOffset);
-					if (isColony(cellTemp) && cellTemp.State() != CellState::Born)
-						newCell.Neighbors()++;
-				}
-					
-				if (newCell.Neighbors() == 3)
-				{
-					newCell.State() = CellState::Born;
-					colony.push_back(newCell);
+					for (auto offsetNew : Offsets)
+					{
+						auto cellTemp = IterColony(cellNew->Point() + offsetNew);
+						if (cellTemp != colony.end()
+								&& (*cellTemp)->State() != CellState::Born)
+							cellNew->Neighbors()++;
+					}
+					if (cellNew->Neighbors() == 3)
+					{
+						colony.push_back(cellNew);
+						borns++;
+					}
+						
 				}
 			}
-			
-			if (cell->Neighbors() < 2 || cell->Neighbors() > 3)
-				cell->State() = CellState::Dead;
 		}
+
+		if (!colony.size())
+			return LifeState::Empty;
+
+		if (!deads && !borns)
+			return LifeState::Still;
 
 		for (int i{}; i < colony.size();)
 		{
-			if (colony[i].State() == CellState::Dead)
+			if (colony[i]->State() == CellState::Dead)
 				colony.erase(colony.begin() + i);
 			else
-			{
-				colony[i].State() = CellState::Alive;
-				i++;
-			}
-			if (colony.size() == 0) break;
+				colony[i++]->State() = CellState::Alive;
 		}
+
+		return LifeState::Ok;
 	}
 	
-	std::vector<Cell>::iterator ItColony(Cell cell)
+	std::vector<Cell*>::iterator IterColony(Point point)
 	{
 		auto find = std::find_if(colony.begin(), colony.end(),
-			[&cell](Cell item)
+			[&point](Cell* item)
 			{
-				return item.Point() == cell.Point();
+				return item->Point() == point;
 			});
 		return find;
 	}
+
+	bool IsColony(Point point)
+	{
+		return IterColony(point) != colony.end();
+	}
+
 };
 

@@ -16,7 +16,8 @@ public:
 	void ShowColony()
 	{
 		for (auto cell : lifeGame->Colony())
-			console->WritePosition(cell.Row(), cell.Column() * 2, std::string(2, box75));
+			if(cell->Row() >= 0 && cell->Column() >= 0)
+				console->WritePosition(cell->Row(), cell->Column() * 2, std::string(2, box75));
 	}
 
 	bool Setup() override
@@ -28,7 +29,7 @@ public:
 
 		KeyCode keyCode;
 
-		std::vector<Cell>::iterator it;
+		std::vector<Cell*>::iterator it;
 
 		while (true)
 		{
@@ -46,7 +47,7 @@ public:
 
 				case ArrowLeft:
 					if (column > 0) column--; break;
-
+					
 				case ArrowRight:
 					column++; break;
 
@@ -60,8 +61,8 @@ public:
 					break;
 
 				case Space:
-					Cell cell(Point(row, column));
-					it = lifeGame->ItColony(cell);
+					Cell* cell = new Cell(Point(row, column), CellState::Alive);
+					it = lifeGame->IterColony(cell->Point());
 
 					if (it == lifeGame->Colony().end())
 						lifeGame->Colony().push_back(cell);
@@ -79,16 +80,55 @@ public:
 
 	void Play() override 
 	{
-		while (true)
+		console->CursorView(false);
+
+
+		Speed() = 200;
+		KeyCode keyCode;
+		bool isGame{ true };
+
+		while (isGame)
 		{
-			if (console->KeyPressed() && (KeyCode)console->GetChar() == KeyCode::Esc)
+			if (console->KeyPressed())
+			{
+				keyCode = (KeyCode)console->GetChar();
+				switch (keyCode)
+				{
+				case ArrowUp:
+					for (auto cell : lifeGame->Colony())
+						cell->Row()++;
+					break;
+				case ArrowDown:
+					for (auto cell : lifeGame->Colony())
+						cell->Row()--;
+					break;
+				case ArrowLeft:
+					for (auto cell : lifeGame->Colony())
+						cell->Column()++;
+					break;
+				case ArrowRight:
+					for (auto cell : lifeGame->Colony())
+						cell->Column()--;
+					break;
+				case Esc:
+					isGame = false;
+					break;
+				}
+			}
+				
+				
+				
+
+			LifeState state = lifeGame->NextColony();
+
+			if (state != LifeState::Ok)
 				break;
-			lifeGame->NextColony();
+
 			console->Clear();
 			ShowColony();
 			
 
-			std::chrono::microseconds duration(speed);
+			std::chrono::milliseconds duration(speed);
 			std::this_thread::sleep_for(duration);
 		}
 	}

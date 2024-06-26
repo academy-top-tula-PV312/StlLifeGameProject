@@ -92,6 +92,14 @@ public:
 	void Clear();
 	int GetChar();
 	int KeyPressed();
+
+	void CursorView(bool visible)
+	{
+		CONSOLE_CURSOR_INFO CCI;
+		CCI.bVisible = visible;
+		CCI.dwSize = 1;
+		SetConsoleCursorInfo(descriptor, &CCI);
+	}
 };
 
 class WindowConsole
