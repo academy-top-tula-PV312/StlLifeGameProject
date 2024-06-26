@@ -56,6 +56,8 @@ public:
 						colony.push_back(cellNew);
 						borns++;
 					}
+					else
+						delete cellNew;
 						
 				}
 			}
